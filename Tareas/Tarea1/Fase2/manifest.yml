@@ -1,0 +1,6 @@
+---
+applications:
+- name: Tarea1-Fase2
+  memory: 64M
+  buildpacks:
+    -
