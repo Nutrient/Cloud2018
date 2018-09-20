@@ -3,6 +3,8 @@ package mx.iteso.desi.cloud.keyvalue;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.*;
 import javafx.scene.control.Tab;
 import mx.iteso.desi.cloud.lp1.Config;
@@ -72,35 +74,6 @@ public class DynamoDBStorage extends BasicKeyValueStore {
         try {
 
 
-            TableKeysAndAttributes forumTableKeysAndAttributes = new TableKeysAndAttributes(dbName);
-            forumTableKeysAndAttributes.addHashAndRangePrimaryKeys("Keyword","inx", search, 0);
-
-            BatchGetItemOutcome outcome = dynamoDB.batchGetItem(forumTableKeysAndAttributes);
-
-            Map<String, KeysAndAttributes> unprocessed = null;
-
-            do {
-                for (String tableName : outcome.getTableItems().keySet()) {
-                    System.out.println("Items in table " + tableName);
-                    List<Item> items = outcome.getTableItems().get(tableName);
-                    for (Item item : items) {
-                        System.out.println(item.get("Keyword").toString());
-                        itemList.add(item.get("Keyword").toString());
-                    }
-                }
-
-                // Check for unprocessed keys which could happen if you exceed
-                // provisioned
-                // throughput or reach the limit on response size.
-                unprocessed = outcome.getUnprocessedKeys();
-
-                if (!unprocessed.isEmpty()) {
-                    System.out.println("No unprocessed keys found");
-                    outcome = dynamoDB.batchGetItemUnprocessed(unprocessed);
-                }
-
-            } while (!unprocessed.isEmpty());
-
         }
         catch (Exception e){
             System.out.println(e.toString());
@@ -111,19 +84,14 @@ public class DynamoDBStorage extends BasicKeyValueStore {
 
     @Override
     public boolean exists(String search) {
-        Map<String, AttributeValue> expressionAttributeValues = new HashMap<String, AttributeValue>();
-        expressionAttributeValues.put(":val", new AttributeValue().withS(search));
 
-        ScanRequest scanRequest = new ScanRequest()
-                .withTableName(dbName)
-                .withFilterExpression("Keyword = :val")
-                .withProjectionExpression("Value")
-                .withExpressionAttributeValues(expressionAttributeValues);
+        Table table = dynamoDB.getTable(dbName);
 
-        ScanResult result = client.scan(scanRequest);
+        QuerySpec spec = new QuerySpec()
+                .withKeyConditionExpression("Keyword = :v_id")
+                .withValueMap(new ValueMap().withString(":v_id", search));
 
-
-        return result.getCount() > 0;
+        return  table.query(spec).iterator().hasNext();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

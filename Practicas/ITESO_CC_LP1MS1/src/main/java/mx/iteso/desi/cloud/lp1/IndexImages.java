@@ -81,12 +81,10 @@ public class IndexImages {
         while ((t = parser.getNextTriple()) != null ){
             if (t.get(1).equals("http://www.w3.org/2000/01/rdf-schema#label") && t.get(2).toUpperCase().startsWith(Config.filter)){
                 if (!itemList.contains(t.get(0)))
-                    itemList.addAll(imageStore.get(t.get(0)));
+                   if(imageStore.exists(t.get(0)))
+                        itemList.add(t.get(0));
 
-                for (String x : itemList){
-                    System.out.print(x + " ");
-                }
-                System.out.println(t.get(0));
+
 
                 if (itemList.contains(t.get(0))){
                     String[] keys = t.get(2).split("\\s+");
