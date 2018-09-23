@@ -70,23 +70,26 @@ public class DynamoDBStorage extends BasicKeyValueStore {
     @Override
     public Set<String> get(String search) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        HashSet<String> itemList = new HashSet<String>();
-        try {
+        Set<String> items = new HashSet<String>();
+        Table table = dynamoDB.getTable(dbName);
+        QuerySpec spec = new QuerySpec()
+                .withKeyConditionExpression("Keyword = :v_id")
+                .withValueMap(new ValueMap().withString(":v_id", search));
 
-
+        ItemCollection<QueryOutcome> queryresult = table.query(spec);
+        Iterator<Item> iterator = queryresult.iterator();
+        while (iterator.hasNext()){
+            items.add(iterator.next().get("Value").toString());
         }
-        catch (Exception e){
-            System.out.println(e.toString());
-        }
 
-        return itemList;
+        return items;
     }
 
     @Override
     public boolean exists(String search) {
 
-        Table table = dynamoDB.getTable(dbName);
 
+        Table table = dynamoDB.getTable(dbName);
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("Keyword = :v_id")
                 .withValueMap(new ValueMap().withString(":v_id", search));

@@ -54,7 +54,7 @@ public class IndexImages {
         List<Item> dictionary = new ArrayList<Item>();
         int inx = 0;
 
-/*
+
         while ((t = parser.getNextTriple()) != null ){
 
             if (t.get(1).equals("http://xmlns.com/foaf/0.1/depiction") && t.get(0).toUpperCase().startsWith("http://dbpedia.org/resource/".toUpperCase() + Config.filter)) {
@@ -69,7 +69,7 @@ public class IndexImages {
                     dictionary.clear();
                 }
         }
-*/
+
         if (dictionary.size() > 0) {
             imageStore.addToSet(dictionary);
             dictionary.clear();
