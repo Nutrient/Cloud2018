@@ -62,12 +62,12 @@ public class IndexImages {
                 dictionary.add(new Item().withPrimaryKey("Keyword", t.get(0))
                         .withNumber("inx", inx++)
                         .withString("Value", t.get(2)));
-                System.out.println(t.get(0) + " " + t.get(1) + " "+ t.get(2));
-            }
+                //System.out.println(t.get(0) + " " + t.get(1) + " "+ t.get(2));
                 if (dictionary.size() == 25) {
                     imageStore.addToSet(dictionary);
                     dictionary.clear();
                 }
+            }
         }
 
         if (dictionary.size() > 0) {
@@ -93,7 +93,7 @@ public class IndexImages {
                         //System.out.println(porterStemTerm);
                         if (porterStemTerm.equals("Invalid term"))
                             porterStemTerm = key;
-                        dictionary.add(new Item().withPrimaryKey("Keyword", porterStemTerm)
+                        dictionary.add(new Item().withPrimaryKey("Keyword", porterStemTerm.toLowerCase())
                                 .withNumber("inx", inx++)
                                 .withString("Value", t.get(0)));
                         if (dictionary.size() == 25) {
