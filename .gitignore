@@ -3,3 +3,4 @@
 **/out/
 **/target/
 **/*.ttl
+**/.DS_Store
