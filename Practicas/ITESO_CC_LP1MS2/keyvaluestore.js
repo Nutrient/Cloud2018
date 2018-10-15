@@ -102,7 +102,7 @@ keyvaluestore.prototype.get = function(search, callback) {
                       });
                     })
                     self.cache.set(search, resultValues);
-                    console.log(resultValues);
+                  //  console.log(resultValues);
                     callback(err, resultValues)
                   }
             })
