@@ -9,23 +9,26 @@ var geoData;
 // in the file, which we then remember in the 'geoData' variable. Error 34
 // is 'file not found'.
 
-fs.readFile('./part-r-00000', 'utf8', function (err,data) {
-  if (err) {
-    if (err.errno == 34) {
-      console.log("Cannot find the file 'part-r-00000' - did you copy it from ");
-      console.log("your 'output' directory to the current directory?");
-      console.log("Try running 'cp ../output/part-r-00000 .'");
+fs.readdir('./output/', function (err, file) {
+  fs.readFile('./output/' + file, 'utf8', function (err,data) {
+    if (err) {
+      if (err.errno == 34) {
+        console.log("Cannot find the file 'part-r-00000' - did you copy it from ");
+        console.log("your 'output' directory to the current directory?");
+        console.log("Try running 'cp ../output/part-r-00000 .'");
+        process.exit(1);
+      }
+
+      console.log("Cannot read from 'part-r-00000': "+err);
       process.exit(1);
     }
-    
-    console.log("Cannot read from 'part-r-00000': "+err);
-    process.exit(1);
-  }
-  geoData = data;
-});
+    geoData += data;
+  });
+})
 
-// The line below tells Node to include a special header in the response that 
-// tells the browser not to cache any files. That way, you do not need to 
+
+// The line below tells Node to include a special header in the response that
+// tells the browser not to cache any files. That way, you do not need to
 // flush the browser's cache whenever you make changes.
 
 var env = process.env.NODE_ENV || 'development';
@@ -39,7 +42,7 @@ if ('development' == env) {
 app.engine('.html', require('ejs').__express);
 app.set('view engine', 'html');
 
-// Here we simply say that the page 'index.ejs' should be returned whenever the 
+// Here we simply say that the page 'index.ejs' should be returned whenever the
 // browser requests the main page (/)
 
 app.get('/', function(req, res){
@@ -56,7 +59,7 @@ app.get('/getGeoData', function(req, res) {
   res.end(body);
 });
 
-// We also have a special 'page' that contains your name, so that it can be 
+// We also have a special 'page' that contains your name, so that it can be
 // displayed on the web page along with the map. This is inteded primarily
 // as a sanity check for your grader, in case a file is left in the browser
 // cache (we don't want to take points from you for someone else's bugs...)

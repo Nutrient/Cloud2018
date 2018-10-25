@@ -15,8 +15,8 @@ public class GeocodeReducer extends Reducer<Text, GeocodeWritable, Text, Text> {
     private String name;
     private double lat, lon;
     private Geocode geocode;
-    private Geocode GDL = new Geocode("Guadalajara", 20.6597, 103.3496);
-    private Geocode MTY = new Geocode("Monterrey", 25.6866, 100.3161);
+    private Geocode GDL = new Geocode("Guadalajara", 20.65, -103.34);
+    private Geocode MTY = new Geocode("Monterrey", 25.68, -100.31);
     private Geocode PHI = new Geocode("Philadelphia", 39.88, -75.25);
     private Geocode HST = new Geocode("Houston", 29.97, -95.35);
     private Geocode STL = new Geocode("Seattle", 47.45, -122.30);
@@ -36,9 +36,9 @@ public class GeocodeReducer extends Reducer<Text, GeocodeWritable, Text, Text> {
                 }
         }
         geocode = new Geocode(name, lat, lon);
-        if (geocode.getHaversineDistance(20.6597, 103.3496) <= 5000.00){
+        if (geocode.getHaversineDistance(20.6597, -103.3496) <= 5000.00){
             context.write(key, new Text(geocode.toString()));
-        }  else if (geocode.getHaversineDistance(25.6866, 100.3161) <= 5000.00){
+        }  else if (geocode.getHaversineDistance(25.6866, -100.3161) <= 5000.00){
             context.write(key, new Text(geocode.toString()));
         }  else if (geocode.getHaversineDistance(39.88, -75.25) <= 5000.00){
             context.write(key, new Text(geocode.toString()));
