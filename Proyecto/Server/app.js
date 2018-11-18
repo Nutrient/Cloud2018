@@ -65,7 +65,7 @@ fastify.register(require('fastify-static'), {
   root: path.join(__dirname, 'public/')
 })
 
-
+fastify.register(require('./routes/r_results'));
 
 
 // Declare a route
