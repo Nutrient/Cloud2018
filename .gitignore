@@ -4,3 +4,5 @@
 **/target/
 **/*.ttl
 **/.DS_Store
+**/auth.json
+**/package-lock.json
