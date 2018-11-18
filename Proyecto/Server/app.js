@@ -1,9 +1,12 @@
 const fastify = require('fastify')();
 const AWS = require('aws-sdk');
+const MongoClient = require('mongodb').MongoClient;
 
 const comprehend = new AWS.Comprehend({region: 'us-east-1'});
 const translator = new AWS.Translate({region: 'us-east-1'});
 const s3 = new AWS.S3({region: 'us-east-1'});
+
+const client = undefined;
 
 const translate = async (text, lan = 'en') => {
   let params = {
@@ -42,8 +45,17 @@ const getSentiment = async (text, lan = 'en') => {
     }
 }
 
-const storeResult = async (result) => {
-
+const storeResult = async (newEntry) => {
+  try {
+    if(!client){
+      client = await MongoClient.connect('mongodb://localhost:27017', {
+        useNewUrlParser: true
+      });
+    }
+    let result = await client.db('moody').collection('discord').insertOne(newEntry);
+  } catch (e) {
+    throw e;
+  }
 }
 
 // Declare a route
@@ -52,6 +64,17 @@ fastify.post('/', async (request, reply) => {
     try {
       let translateResult = await translate(request.body.message);
       let sentimentResult = await getSentiment(translateResult);
+
+      let entry = {
+        user: request.body.user,
+        userID: request.body.userID,
+        channelID: request.body.channelID,
+        originalMsg: request.body.message,
+        translatedMsg: translateResult,
+        ...sentimentResult
+      };
+      
+      await storeResult(entry);
 
       return { result: sentimentResult};
     } catch (e) {
