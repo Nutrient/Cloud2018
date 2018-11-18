@@ -1,6 +1,7 @@
 const fastify = require('fastify')();
 const AWS = require('aws-sdk');
 const MongoClient = require('mongodb').MongoClient;
+const path = require('path');
 
 const comprehend = new AWS.Comprehend({region: 'us-east-1'});
 const translator = new AWS.Translate({region: 'us-east-1'});
@@ -58,6 +59,15 @@ const storeResult = async (newEntry) => {
   }
 }
 
+
+
+fastify.register(require('fastify-static'), {
+  root: path.join(__dirname, 'public/')
+})
+
+
+
+
 // Declare a route
 fastify.post('/', async (request, reply) => {
   if(request.body.message && request.body.message !== '')
@@ -71,6 +81,7 @@ fastify.post('/', async (request, reply) => {
         channelID: request.body.channelID,
         originalMsg: request.body.message,
         translatedMsg: translateResult,
+        serverTime: Date.now(),
         ...sentimentResult
       };
 
@@ -84,9 +95,13 @@ fastify.post('/', async (request, reply) => {
   else {
     return {err: 'missing parameters'};
   }
+});
 
-
-})
+fastify.get('/results', async (request, reply) => {
+  reply.header('Content-Type', 'text/html')
+  reply.type('text/html')
+  reply.sendFile('/html/result.html');
+});
 
 // Run the server!
 const start = async () => {
