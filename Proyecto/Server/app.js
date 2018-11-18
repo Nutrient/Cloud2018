@@ -6,7 +6,7 @@ const comprehend = new AWS.Comprehend({region: 'us-east-1'});
 const translator = new AWS.Translate({region: 'us-east-1'});
 const s3 = new AWS.S3({region: 'us-east-1'});
 
-const client = undefined;
+let client = undefined;
 
 const translate = async (text, lan = 'en') => {
   let params = {
@@ -73,7 +73,7 @@ fastify.post('/', async (request, reply) => {
         translatedMsg: translateResult,
         ...sentimentResult
       };
-      
+
       await storeResult(entry);
 
       return { result: sentimentResult};
