@@ -44,7 +44,7 @@ module.exports.userTimeline = (channelID, userID) => ([
     "$group": {
       "_id": {
         "$concat": [
-         {"$year": "$serverTime"} , {"$month": "$serverTime"} ,{"$dayOfMonth": "$serverTime"}
+         {"$toString": {"$year": "$serverTime"} },"-", {"$toString": {"$month": "$serverTime"}}, "-", {"$toString": {"$dayOfMonth": "$serverTime"}}
       ]},
       "date": {
         "$push": {
