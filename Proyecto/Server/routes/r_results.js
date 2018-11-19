@@ -41,7 +41,7 @@ module.exports = (fastify, opts, next) => {
         result = await client.db('moody').collection('discord').aggregate(queries.topFive(req.body.channelID, req.body.Sentiment)).toArray();
         let key = `${req.body.channelID}-${req.body.Sentiment}-${Date.now()}`;
         await storeResult(key, {Sentiment: req.body.Sentiment, type: 0, result: result});
-        url = `http://ec2-35-153-138-183.compute-1.amazonaws.com/topFive/${key}`;
+        url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/topFive/${key}`;
 
       } catch (e) {
         console.log(e);
