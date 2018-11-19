@@ -15,7 +15,7 @@ const storeResult = async (key, body ) => {
   }
 
   try {
-    await s3.putObject(obj);
+    let result = await s3.putObject(obj).promise();
   } catch (e) {
     console.log(e);
     throw e;
@@ -37,10 +37,8 @@ module.exports = (fastify, opts, next) => {
       let url = '';
       try {
         result = await client.db('moody').collection('discord').aggregate(queries.topFive(req.body.channelID, req.body.Sentiment)).toArray();
-        result.Sentiment = req.body.Sentiment;
-        result.type = 0;
         let key = `${req.body.channelID}-${req.body.Sentiment}-${Date.now()}.json`;
-        await storeResult(key, result);
+        await storeResult(key, {Sentiment: req.body.Sentiment, type: 0, result: result});
         url = `http://ec2-35-153-138-183.compute-1.amazonaws.com/topFive/${key}`;
 
       } catch (e) {
@@ -49,6 +47,8 @@ module.exports = (fastify, opts, next) => {
 
       res.send(url);
   });
+
+  fastify.get('/topFive/:result')
 
   fastify.post('/userTimeline', async (req, res) => {
     //userId, channelID
