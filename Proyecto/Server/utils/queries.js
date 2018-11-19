@@ -32,12 +32,23 @@ module.exports.userTimeline = (channelID, userID) => ([
     }
   },
   {
+    "$project": {
+      "userID": 1,
+      "serverTime": 1,
+      "sentiment": 1,
+      "score": 1,
+      "serverTime": { "$divide": ["$serverTime", 1000*60*60*24]}
+    }
+  },
+  {
     "$group": {
-      "_id": "$userID",
+      "_id": "$sentiment",
       "date": {
-        "$add": [new Date(0), "$serverTime"]
-      },
-      "avgScore": {"$avg": "$score"}
+        "push": {
+          "day": "$serverTime",
+          "avgScore": {"$avg": "$score"}
+        }
+      }
     }
   }
 ]);
