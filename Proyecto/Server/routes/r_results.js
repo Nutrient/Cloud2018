@@ -94,8 +94,8 @@ module.exports = (fastify, opts, next) => {
     let url = '';
     try {
       result = await client.db('moody').collection('discord').aggregate(queries.userTimeline(req.body.channelID, req.body.userID)).toArray();
-      let key = `${req.body.channelID}-${req.body.Sentiment}-${Date.now()}`;
-      await storeResult(key, {Sentiment: req.body.Sentiment, type: 1, result: result});
+      let key = `${req.body.channelID}-${req.body.userID}-${Date.now()}`;
+      await storeResult(key, {userID: req.body.userID, type: 1, result: result});
       url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userTimeline/${key}`;
 
     } catch (e) {
@@ -113,6 +113,7 @@ module.exports = (fastify, opts, next) => {
     try {
       let result = await s3.getObject({Bucket: 'cloud2018final', Key: req.params.result}).promise();
       let jsonResult = JSON.parse(result.Body.toString('utf8'));
+      console.log(jsonResult);
       let reqResult = await request({
         method: 'GET',
         uri: `https://discordapp.com/api/v6/users/${jsonResult.userID}`,
