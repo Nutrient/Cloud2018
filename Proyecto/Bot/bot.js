@@ -33,7 +33,7 @@ bot.on('message',  async (user, userID, channelID, message, evt) => {
               body: {channelID: channelID, Sentiment: command[1]},
               json: true
             });
-            if (Object.keys(result).length === 0) {
+            if (result.length === 0) {
               bot.sendMessage({
                      to: channelID,
                      message: 'Server Error :('
