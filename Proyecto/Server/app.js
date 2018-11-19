@@ -5,7 +5,7 @@ const path = require('path');
 
 const comprehend = new AWS.Comprehend({region: 'us-east-1'});
 const translator = new AWS.Translate({region: 'us-east-1'});
-const s3 = new AWS.S3({region: 'us-east-1'});
+
 
 let client = undefined;
 

@@ -1,8 +1,26 @@
 const MongoClient = require('mongodb').MongoClient;
+const AWS = require('aws-sdk');
 
+const s3 = new AWS.S3({region: 'us-east-1'});
 const queries = require('../utils/queries');
 
 let client = undefined;
+
+const storeResult = async (key, body ) => {
+  let obj = {
+    Bucket: 'cloud2018final',
+    Key: key,
+    Body: JSON.stringify(body),
+    ContentType: "application/json"
+  }
+
+  try {
+    await s3.putObject(obj);
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+}
 
 
 module.exports = (fastify, opts, next) => {
@@ -16,13 +34,20 @@ module.exports = (fastify, opts, next) => {
         });
       }
       let result = {};
+      let url = '';
       try {
-        let result = await client.db('moody').collection('discord').aggregate(queries.topFive(req.body.channelID, req.body.Sentiment));
+        result = await client.db('moody').collection('discord').aggregate(queries.topFive(req.body.channelID, req.body.Sentiment)).toArray();
+        result.Sentiment = req.body.Sentiment;
+        result.type = 0;
+        let key = `${req.body.channelID}-${req.body.Sentiment}-${Date.now().json}`;
+        await storeResult(key, result);
+        url = `http://ec2-35-153-138-183.compute-1.amazonaws.com/topFive/${key}`;
+
       } catch (e) {
         console.log(e);
       }
 
-      res.send(result);
+      res.send(url);
   });
 
   fastify.post('/userTimeline', async (req, res) => {
