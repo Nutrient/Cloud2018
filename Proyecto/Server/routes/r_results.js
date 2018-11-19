@@ -125,7 +125,6 @@ module.exports = (fastify, opts, next) => {
         title=`"${reqResult.username}#${reqResult.discriminator}"`
         //dates.push(`"${reqResult._id}"`);
         //userdata.push(+user.avgScore);
-      }
     } catch (e) {
       console.log(e);
       throw e;
