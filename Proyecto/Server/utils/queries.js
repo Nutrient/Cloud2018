@@ -2,9 +2,9 @@ module.exports.topFive = (channelID, sentiment) => ([
   {
     "$match": {
       "channelID": {
-        "$eq": channelID
+        "$eq": channelID.toString();
       },
-      "sentiment": {
+      "Sentiment": {
         "$eq": sentiment.toUpperCase()
       }
     }
@@ -12,7 +12,7 @@ module.exports.topFive = (channelID, sentiment) => ([
   {
     "$group": {
       "_id": "$userID",
-      "avgScore": {"$avg": "score"}
+      "avgScore": {"$avg": "$score"}
     }
   },
   {

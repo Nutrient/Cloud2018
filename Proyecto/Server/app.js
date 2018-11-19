@@ -77,8 +77,8 @@ fastify.post('/', async (request, reply) => {
 
       let entry = {
         user: request.body.user,
-        userID: request.body.userID,
-        channelID: request.body.channelID,
+        userID: request.body.userID.toString(),
+        channelID: request.body.channelID.toString(),
         originalMsg: request.body.message,
         translatedMsg: translateResult,
         serverTime: Date.now(),
