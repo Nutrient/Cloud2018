@@ -69,7 +69,7 @@ module.exports = (fastify, opts, next) => {
           },
           json: true
         });
-        console.log(reqResult);
+      //  console.log(reqResult);
         users.push(`"${reqResult.username}#${reqResult.discriminator}"`);
         userdata.push(+user.avgScore);
       }
@@ -79,7 +79,7 @@ module.exports = (fastify, opts, next) => {
     }
     res.header('Content-Type', 'text/html')
     res.type('text/html')
-    res.send(require('../public/html/result')(title, users, userdata))
+    res.send(require('../public/html/result').topFive(title, users, userdata))
   });
 
   fastify.post('/userTimeline', async (req, res) => {
@@ -95,18 +95,44 @@ module.exports = (fastify, opts, next) => {
     try {
       result = await client.db('moody').collection('discord').aggregate(queries.userTimeline(req.body.channelID, req.body.userID)).toArray();
       let key = `${req.body.channelID}-${req.body.Sentiment}-${Date.now()}`;
-      //await storeResult(key, {Sentiment: req.body.Sentiment, type: 0, result: result});
-      //url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/topFive/${key}`;
+      await storeResult(key, {Sentiment: req.body.Sentiment, type: 1, result: result});
+      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userTimeline/${key}`;
 
     } catch (e) {
       console.log(e);
     }
 
-    res.send(result);
+    res.send(url);
   });
 
   fastify.get('/userTimeline/:result', async (req, res) => {
+    let dates = [];
+    let userdata = [];
+    let title;
 
+    try {
+      let result = await s3.getObject({Bucket: 'cloud2018final', Key: req.params.result}).promise();
+      let jsonResult = JSON.parse(result.Body.toString('utf8'));
+      let reqResult = await request({
+        method: 'GET',
+        uri: `https://discordapp.com/api/v6/users/${jsonResult.userID}`,
+        headers: {
+          'Authorization': `Bot ${auth.token}`
+        },
+        json: true
+      })
+      //  console.log(reqResult);
+        title=`"${reqResult.username}#${reqResult.discriminator}"`
+        //dates.push(`"${reqResult._id}"`);
+        //userdata.push(+user.avgScore);
+      }
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+    res.header('Content-Type', 'text/html')
+    res.type('text/html')
+    res.send(require('../public/html/result').timeline(title, dates, userdata))
   });
 
   fastify.post('/userStats', async (req, res) => {
