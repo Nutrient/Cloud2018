@@ -2,7 +2,7 @@ module.exports.topFive = (channelID, sentiment) => ([
   {
     "$match": {
       "channelID": {
-        "$eq": channelID.toString();
+        "$eq": channelID.toString()
       },
       "Sentiment": {
         "$eq": sentiment.toUpperCase()
