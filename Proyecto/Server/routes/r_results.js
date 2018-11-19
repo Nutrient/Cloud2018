@@ -48,7 +48,9 @@ module.exports = (fastify, opts, next) => {
       res.send(url);
   });
 
-  fastify.get('/topFive/:result')
+  fastify.get('/topFive/:result', async (req, res) => {
+    
+  });
 
   fastify.post('/userTimeline', async (req, res) => {
     //userId, channelID
