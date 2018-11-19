@@ -97,11 +97,6 @@ fastify.post('/', async (request, reply) => {
   }
 });
 
-fastify.get('/results', async (request, reply) => {
-  reply.header('Content-Type', 'text/html')
-  reply.type('text/html')
-  reply.sendFile('/html/result.html');
-});
 
 // Run the server!
 const start = async () => {

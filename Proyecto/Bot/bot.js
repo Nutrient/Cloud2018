@@ -1,5 +1,5 @@
 const Discord = require('discord.io');
-const request = require('request-promise')
+const request = require('request-promise');
 const auth = require('./auth.json');
 
 const bot = new Discord.Client({

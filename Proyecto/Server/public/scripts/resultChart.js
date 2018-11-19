@@ -1,5 +1,14 @@
-var xhttp = new XMLHttpRequest(); 
+var xhttp = new XMLHttpRequest();
 var ctx = document.getElementById("myChart");
+
+xhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+
+  }
+};
+
+
+
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
