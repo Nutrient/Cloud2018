@@ -22,15 +22,15 @@ bot.on('message',  async (user, userID, channelID, message, evt) => {
         'message': message
       };
 
-      let command = message.split(' ')[0];
+      let command = message.split(' ');
 
-      switch (command) {
+      switch (command[0]) {
         case '=?topfive':
           try {
             let result = await request({
               method: 'POST',
               uri: 'http://localhost:5000/topFive',
-              body: {channelID: channelID, Sentiment: message},
+              body: {channelID: channelID, Sentiment: command[1]},
               json: true
             });
             if (Object.keys(result).length === 0) {

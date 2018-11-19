@@ -12,7 +12,6 @@ module.exports.topFive = (channelID, sentiment) => ([
   {
     "$group": {
       "_id": "$userID",
-      "sentiment": "$sentiment",
       "avgScore": {"$avg": "score"}
     }
   },
