@@ -51,6 +51,88 @@ bot.on('message',  async (user, userID, channelID, message, evt) => {
               });
           }
           break;
+
+        case '=?userTimeline':
+          try {
+            let result = await request({
+              method: 'POST',
+              uri: 'http://localhost:5000/userTimeline',
+              body: {channelID: channelID, userID: userID},
+              json: true
+            });
+            if (result.length === 0) {
+              bot.sendMessage({
+                     to: channelID,
+                     message: 'Server Error :('
+              });
+            }else {
+              bot.sendMessage({
+                     to: channelID,
+                     message: JSON.stringify(result)
+              });
+            }
+          } catch (e) {
+              bot.sendMessage({
+                     to: channelID,
+                     message: 'Server Error :('
+              });
+          }
+          break;
+
+        case '=?userStats':
+          try {
+            let result = await request({
+              method: 'POST',
+              uri: 'http://localhost:5000/userStats',
+              body: {userID: userID},
+              json: true
+            });
+            if (result.length === 0) {
+              bot.sendMessage({
+                     to: channelID,
+                     message: 'Server Error :('
+              });
+            }else {
+              bot.sendMessage({
+                     to: channelID,
+                     message: JSON.stringify(result)
+              });
+            }
+          } catch (e) {
+              bot.sendMessage({
+                     to: channelID,
+                     message: 'Server Error :('
+              });
+          }
+          break;
+
+        case '=?userStatsChannel':
+          try {
+            let result = await request({
+              method: 'POST',
+              uri: 'http://localhost:5000/userStatsChannel',
+              body: {channelID: channelID, userID: userID},
+              json: true
+            });
+            if (result.length === 0) {
+              bot.sendMessage({
+                     to: channelID,
+                     message: 'Server Error :('
+              });
+            }else {
+              bot.sendMessage({
+                     to: channelID,
+                     message: JSON.stringify(result)
+              });
+            }
+          } catch (e) {
+              bot.sendMessage({
+                     to: channelID,
+                     message: 'Server Error :('
+              });
+          }
+          break;
+
         default:
           try {
             let result = await request({

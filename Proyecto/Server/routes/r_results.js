@@ -73,9 +73,6 @@ module.exports = (fastify, opts, next) => {
         users.push(`"${reqResult.username}#${reqResult.discriminator}"`);
         userdata.push(+user.avgScore);
       }
-
-      console.log(title, users, userdata);
-
     } catch (e) {
       console.log(e);
       throw e;
@@ -83,9 +80,6 @@ module.exports = (fastify, opts, next) => {
     res.header('Content-Type', 'text/html')
     res.type('text/html')
     res.send(require('../public/html/result')(title, users, userdata))
-
-
-
   });
 
   fastify.post('/userTimeline', async (req, res) => {
@@ -96,7 +90,19 @@ module.exports = (fastify, opts, next) => {
         useNewUrlParser: true
       });
     }
-    res.send({});
+    let result = {};
+    let url = '';
+    try {
+      result = await client.db('moody').collection('discord').aggregate(queries.userTimeline(req.body.channelID, req.body.userID)).toArray();
+      let key = `${req.body.channelID}-${req.body.Sentiment}-${Date.now()}`;
+      //await storeResult(key, {Sentiment: req.body.Sentiment, type: 0, result: result});
+      //url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/topFive/${key}`;
+
+    } catch (e) {
+      console.log(e);
+    }
+
+    res.send(result);
   });
 
   fastify.get('/userTimeline/:result', async (req, res) => {
