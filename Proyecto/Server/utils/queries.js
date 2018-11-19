@@ -37,15 +37,15 @@ module.exports.userTimeline = (channelID, userID) => ([
       "serverTime": 1,
       "sentiment": 1,
       "score": 1,
-      "serverTime": { "$divide": ["$serverTime", 1000*60*60*24]}
+      "serverTime": { "$add": [new Date(0),"$serverTime"]}
     }
   },
   {
     "$group": {
-      "_id": "$sentiment",
+      "_id": "$dateToString: { format: \"%Y-%m-%d\", date: $serverTime }",
       "date": {
-        "push": {
-          "day": "$serverTime",
+        "$push": {
+          "day": "$sentiment",
           "avgScore": {"$avg": "$score"}
         }
       }
