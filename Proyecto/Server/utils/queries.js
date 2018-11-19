@@ -4,7 +4,7 @@ module.exports.topFive = (channelID, sentiment) => ([
       "channelID": {
         "$eq": channelID
       },
-      "Sentiment": {
+      "sentiment": {
         "$eq": sentiment.toUpperCase()
       }
     }
