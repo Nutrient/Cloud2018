@@ -43,7 +43,7 @@ module.exports.userTimeline = (channelID, userID) => ([
   {
     "$group": {
       "_id": {"$dateToString": { "format": "%Y-%m-%d", "date": "$serverTime" }},
-      "date": {
+      "scores": {
         "$push": {
           "sentiment": "$sentiment",
           "avgScore": {"$avg": "$score"}
