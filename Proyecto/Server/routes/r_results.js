@@ -107,13 +107,35 @@ module.exports = (fastify, opts, next) => {
 
   fastify.get('/userTimeline/:result', async (req, res) => {
     let dates = [];
-    let userdata = [];
+    let userdata = [{
+        data:[],
+        label: "Neutral",
+        borderColor: "#3e95cd",
+        fill: false
+      },
+      {
+        data:[],
+        label: "Negative",
+        borderColor: "#8e5ea2",
+        fill: false
+      },
+      {
+        data:[],
+        label: "Positive",
+        borderColor: "#3cba9f",
+        fill: false
+      },
+      {
+        data:[],
+        label: "Mixed",
+        borderColor: "#e8c3b9",
+        fill: false
+      }];
+    let data = [];
     let title;
-
     try {
       let result = await s3.getObject({Bucket: 'cloud2018final', Key: req.params.result}).promise();
       let jsonResult = JSON.parse(result.Body.toString('utf8'));
-      console.log(jsonResult);
       let reqResult = await request({
         method: 'GET',
         uri: `https://discordapp.com/api/v6/users/${jsonResult.userID}`,
@@ -124,6 +146,32 @@ module.exports = (fastify, opts, next) => {
       })
       //  console.log(reqResult);
         title=`"${reqResult.username}#${reqResult.discriminator}"`
+        jsonResult.result.forEach(record => {
+          dates.push(`"${record._id}"`);
+          record.scores.forEach(score => {
+            switch (score.sentiment) {
+              case "NEGATIVE":
+                userdata[1].data.push(score.avgScore);
+                break;
+              case "POSITIVE":
+                userdata[2].data.push(score.avgScore);
+                break;
+              case "MIXED":
+                userdata[3].data.push(score.avgScore);
+                break;
+              case "NEUTRAL":
+                userdata[0].data.push(score.avgScore);
+                break;
+              default:
+
+            }
+          })
+
+        })
+
+        userdata.forEach(ud => {
+          data.push(`${JSON.stringify(ud)}`);
+        })
         //dates.push(`"${reqResult._id}"`);
         //userdata.push(+user.avgScore);
     } catch (e) {
@@ -132,7 +180,7 @@ module.exports = (fastify, opts, next) => {
     }
     res.header('Content-Type', 'text/html')
     res.type('text/html')
-    res.send(require('../public/html/result').timeline(title, dates, userdata))
+    res.send(require('../public/html/result').timeline(dates, data, title))
   });
 
   fastify.post('/userStats', async (req, res) => {
