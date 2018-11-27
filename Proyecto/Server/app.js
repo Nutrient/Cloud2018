@@ -90,7 +90,7 @@ fastify.post('/', async (request, reply) => {
       return { result: sentimentResult};
     } catch (e) {
       console.log(e);
-      return {err: 'invalid request'};
+      return {err: 'invalid req35.153.138.183'};
     }
   else {
     return {err: 'missing parameters'};
