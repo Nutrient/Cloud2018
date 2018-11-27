@@ -49,7 +49,7 @@ const getSentiment = async (text, lan = 'en') => {
 const storeResult = async (newEntry) => {
   try {
     if(!client){
-      client = await MongoClient.connect('mongodb://35.153.138.183:27017', {
+      client = await MongoClient.connect('mongodb://localhost:27017', {
         useNewUrlParser: true
       });
     }
@@ -90,7 +90,7 @@ fastify.post('/', async (request, reply) => {
       return { result: sentimentResult};
     } catch (e) {
       console.log(e);
-      return {err: 'invalid req35.153.138.183'};
+      return {err: 'invalid request'};
     }
   else {
     return {err: 'missing parameters'};

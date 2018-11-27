@@ -31,7 +31,7 @@ module.exports = (fastify, opts, next) => {
       //channelID, emotion
       //provides information of the top 5 channel members that have have the higuest stats on this emotion
       if(!client){
-        client = await MongoClient.connect('mongodb://35.153.138.183:27017', {
+        client = await MongoClient.connect('mongodb://localhost:27017', {
           useNewUrlParser: true
         });
       }
@@ -41,7 +41,7 @@ module.exports = (fastify, opts, next) => {
         result = await client.db('moody').collection('discord').aggregate(queries.topFive(req.body.channelID, req.body.Sentiment)).toArray();
         let key = `${req.body.channelID}-${req.body.Sentiment}-${Date.now()}`;
         await storeResult(key, {Sentiment: req.body.Sentiment, type: 0, result: result});
-        url = `http://cloud-borrar-1972453943.us-east-1.elb.amazonaws.com/topFive/${key}`;
+        url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/topFive/${key}`;
 
       } catch (e) {
         console.log(e);
@@ -86,7 +86,7 @@ module.exports = (fastify, opts, next) => {
     //userId, channelID
     //provides information of a user's emotions per day
     if(!client){
-      client = await MongoClient.connect('mongodb://35.153.138.183:27017', {
+      client = await MongoClient.connect('mongodb://localhost:27017', {
         useNewUrlParser: true
       });
     }
@@ -96,7 +96,7 @@ module.exports = (fastify, opts, next) => {
       result = await client.db('moody').collection('discord').aggregate(queries.userTimeline(req.body.channelID, req.body.userID)).toArray();
       let key = `${req.body.channelID}-${req.body.userID}-${Date.now()}`;
       await storeResult(key, {userID: req.body.userID, type: 1, result: result});
-      url = `http://cloud-borrar-1972453943.us-east-1.elb.amazonaws.com/userTimeline/${key}`;
+      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userTimeline/${key}`;
 
     } catch (e) {
       console.log(e);
@@ -187,7 +187,7 @@ module.exports = (fastify, opts, next) => {
     //userID
     //provides general information of a user overall channels where the bot its listening
     if(!client){
-      client = await MongoClient.connect('mongodb://35.153.138.183:27017', {
+      client = await MongoClient.connect('mongodb://localhost:27017', {
         useNewUrlParser: true
       });
     }
@@ -198,7 +198,7 @@ module.exports = (fastify, opts, next) => {
       result = await client.db('moody').collection('discord').aggregate(queries.userStatsGeneral(req.body.userID)).toArray();
       let key = `${req.body.userID}-userStats-${Date.now()}`;
       await storeResult(key, {Sentiment: req.body.Sentiment, type: 2, result: result});
-      url = `http://cloud-borrar-1972453943.us-east-1.elb.amazonaws.com/userStats/${key}`;
+      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userStats/${key}`;
 
     } catch (e) {
       console.log(e);
@@ -265,7 +265,7 @@ module.exports = (fastify, opts, next) => {
     //userId, channelID
     //provides general information of a user in the current channel
     if(!client){
-      client = await MongoClient.connect('mongodb://35.153.138.183:27017', {
+      client = await MongoClient.connect('mongodb://localhost:27017', {
         useNewUrlParser: true
       });
     }
@@ -276,7 +276,7 @@ module.exports = (fastify, opts, next) => {
       result = await client.db('moody').collection('discord').aggregate(queries.userStatsChannel(req.body.channelID, req.body.userID)).toArray();
       let key = `${req.body.userID}-userStatsChannel-${Date.now()}`;
       await storeResult(key, {Sentiment: req.body.Sentiment, type: 2, result: result});
-      url = `http://cloud-borrar-1972453943.us-east-1.elb.amazonaws.com/userStatsChannel/${key}`;
+      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userStatsChannel/${key}`;
 
     } catch (e) {
       console.log(e);
