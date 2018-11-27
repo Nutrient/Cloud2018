@@ -49,7 +49,7 @@ const getSentiment = async (text, lan = 'en') => {
 const storeResult = async (newEntry) => {
   try {
     if(!client){
-      client = await MongoClient.connect('mongodb://172.31.39.203:27017', {
+      client = await MongoClient.connect('mongodb://35.153.138.183:27017', {
         useNewUrlParser: true
       });
     }

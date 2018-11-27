@@ -41,7 +41,7 @@ module.exports = (fastify, opts, next) => {
         result = await client.db('moody').collection('discord').aggregate(queries.topFive(req.body.channelID, req.body.Sentiment)).toArray();
         let key = `${req.body.channelID}-${req.body.Sentiment}-${Date.now()}`;
         await storeResult(key, {Sentiment: req.body.Sentiment, type: 0, result: result});
-        url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/topFive/${key}`;
+        url = `http://cloud-borrar-1972453943.us-east-1.elb.amazonaws.com/topFive/${key}`;
 
       } catch (e) {
         console.log(e);
@@ -96,7 +96,7 @@ module.exports = (fastify, opts, next) => {
       result = await client.db('moody').collection('discord').aggregate(queries.userTimeline(req.body.channelID, req.body.userID)).toArray();
       let key = `${req.body.channelID}-${req.body.userID}-${Date.now()}`;
       await storeResult(key, {userID: req.body.userID, type: 1, result: result});
-      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userTimeline/${key}`;
+      url = `http://cloud-borrar-1972453943.us-east-1.elb.amazonaws.com/userTimeline/${key}`;
 
     } catch (e) {
       console.log(e);
@@ -198,7 +198,7 @@ module.exports = (fastify, opts, next) => {
       result = await client.db('moody').collection('discord').aggregate(queries.userStatsGeneral(req.body.userID)).toArray();
       let key = `${req.body.userID}-userStats-${Date.now()}`;
       await storeResult(key, {Sentiment: req.body.Sentiment, type: 2, result: result});
-      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userStats/${key}`;
+      url = `http://cloud-borrar-1972453943.us-east-1.elb.amazonaws.com/userStats/${key}`;
 
     } catch (e) {
       console.log(e);
@@ -276,7 +276,7 @@ module.exports = (fastify, opts, next) => {
       result = await client.db('moody').collection('discord').aggregate(queries.userStatsChannel(req.body.channelID, req.body.userID)).toArray();
       let key = `${req.body.userID}-userStatsChannel-${Date.now()}`;
       await storeResult(key, {Sentiment: req.body.Sentiment, type: 2, result: result});
-      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userStatsChannel/${key}`;
+      url = `http://cloud-borrar-1972453943.us-east-1.elb.amazonaws.com/userStatsChannel/${key}`;
 
     } catch (e) {
       console.log(e);
