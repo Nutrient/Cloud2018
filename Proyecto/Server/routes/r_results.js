@@ -191,7 +191,20 @@ module.exports = (fastify, opts, next) => {
         useNewUrlParser: true
       });
     }
-    res.send({});
+
+    let result = {};
+    let url = '';
+    try {
+      result = await client.db('moody').collection('discord').aggregate(queries.topFive(req.body.userID)).toArray();
+      let key = `${req.body.userID}-userStats-${Date.now()}`;
+      await storeResult(key, {Sentiment: req.body.Sentiment, type: 2, result: result});
+      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userStats/${key}`;
+
+    } catch (e) {
+      console.log(e);
+    }
+
+    res.send(url);
   });
 
   fastify.get('/userStats/:result', async (req, res) => {

@@ -52,3 +52,44 @@ module.exports.userTimeline = (channelID, userID) => ([
     }
   }
 ]);
+
+
+module.exports.userStatsGeneral = (userID) => {
+  ([
+    {
+      "$match": {
+        "userID": {
+          "$eq": userID.toUpperCase()
+        }
+      }
+    },
+    {
+      "$group": {
+        "_id": "$sentiment",
+        "userID": {"$first": "$userID"},
+        "avgScore": {"$avg": "$score"}
+      }
+    }
+  ])
+};
+module.exports.userStatsChannel = (channelID, userID) => {
+  ([
+    {
+      "$match": {
+        "userID": {
+          "$eq": userID.toUpperCase()
+        },
+        "channelID": {
+          "$eq": channelID.toString()
+        }
+      }
+    },
+    {
+      "$group": {
+        "_id": "$sentiment",
+        "userID": {"$first": "$userID"},
+        "avgScore": {"$avg": "$score"}
+      }
+    }
+  ])
+};
