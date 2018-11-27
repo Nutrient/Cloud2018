@@ -54,8 +54,7 @@ module.exports.userTimeline = (channelID, userID) => ([
 ]);
 
 
-module.exports.userStatsGeneral = (userID) => {
-  ([
+module.exports.userStatsGeneral = (userID) =>  ([
     {
       "$match": {
         "userID": {
@@ -70,10 +69,8 @@ module.exports.userStatsGeneral = (userID) => {
         "avgScore": {"$avg": "$score"}
       }
     }
-  ])
-};
-module.exports.userStatsChannel = (channelID, userID) => {
-  ([
+  ]);
+module.exports.userStatsChannel = (channelID, userID) =>  ([
     {
       "$match": {
         "userID": {
@@ -91,5 +88,4 @@ module.exports.userStatsChannel = (channelID, userID) => {
         "avgScore": {"$avg": "$score"}
       }
     }
-  ])
-};
+  ]);
