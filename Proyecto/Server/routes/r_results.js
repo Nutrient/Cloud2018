@@ -31,7 +31,7 @@ module.exports = (fastify, opts, next) => {
       //channelID, emotion
       //provides information of the top 5 channel members that have have the higuest stats on this emotion
       if(!client){
-        client = await MongoClient.connect('mongodb://localhost:27017', {
+        client = await MongoClient.connect('mongodb://172.31.39.203:27017', {
           useNewUrlParser: true
         });
       }
@@ -86,7 +86,7 @@ module.exports = (fastify, opts, next) => {
     //userId, channelID
     //provides information of a user's emotions per day
     if(!client){
-      client = await MongoClient.connect('mongodb://localhost:27017', {
+      client = await MongoClient.connect('mongodb://172.31.39.203:27017', {
         useNewUrlParser: true
       });
     }
@@ -187,7 +187,7 @@ module.exports = (fastify, opts, next) => {
     //userID
     //provides general information of a user overall channels where the bot its listening
     if(!client){
-      client = await MongoClient.connect('mongodb://localhost:27017', {
+      client = await MongoClient.connect('mongodb://172.31.39.203:27017', {
         useNewUrlParser: true
       });
     }
@@ -265,7 +265,7 @@ module.exports = (fastify, opts, next) => {
     //userId, channelID
     //provides general information of a user in the current channel
     if(!client){
-      client = await MongoClient.connect('mongodb://localhost:27017', {
+      client = await MongoClient.connect('mongodb://172.31.39.203:27017', {
         useNewUrlParser: true
       });
     }
