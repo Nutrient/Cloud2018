@@ -100,7 +100,7 @@ module.exports.userStats = (user, data)=>(`
   </head>
   <body>
     <div class="container">
-      <canvas id="myChart"/>
+      <canvas id="myChart" width="400" height="400"/>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.js"></script>
     <script>
@@ -133,13 +133,6 @@ module.exports.userStats = (user, data)=>(`
             display:true,
             text:'Emociones por General',
             fontSize:25
-          },
-          legend:{
-            display:true,
-            position:'right',
-            labels:{
-              fontColor:'#000'
-            }
           },
           layout:{
             padding:{

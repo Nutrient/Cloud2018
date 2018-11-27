@@ -208,7 +208,57 @@ module.exports = (fastify, opts, next) => {
   });
 
   fastify.get('/userStats/:result', async (req, res) => {
+    let user;
+    let data = [];
+    try {
+      let result = await s3.getObject({Bucket: 'cloud2018final', Key: req.params.result}).promise();
+      let jsonResult = JSON.parse(result.Body.toString('utf8'));
+      let reqResult = await request({
+        method: 'GET',
+        uri: `https://discordapp.com/api/v6/users/${jsonResult.result[0].userID}`,
+        headers: {
+          'Authorization': `Bot ${auth.token}`
+        },
+        json: true
+      })
+      //  console.log(reqResult);
+      user=`"${reqResult.username}#${reqResult.discriminator}"`
+      jsonResult.result.forEach(record => {
+        switch (record._id) {
+          case "NEGATIVE":
+            //userdata[2].
+            data.push(record.avgScore);
+            break;
+          case "POSITIVE":
+            //userdata[0].
+            data.push(record.avgScore);
+            break;
+          case "MIXED":
+          //  userdata[3].
+            data.push(record.avgScore);
+            break;
+          case "NEUTRAL":
+            //userdata[1].
+            data.push(record.avgScore);
+            break;
+          default:
+        }
+      })
 
+        //dates.push(`"${reqResult._id}"`);
+        //userdata.push(+user.avgScore);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+    // userdata.forEach(ud => {
+    //   data.push(`${JSON.stringify(ud)}`);
+    // })
+
+    res.header('Content-Type', 'text/html')
+    res.type('text/html')
+    res.send(require('../public/html/result').userStats(user, data));
+    console.log(data.toString());
   });
 
   fastify.post('/userStatsChannel', async (req, res) => {
@@ -219,10 +269,73 @@ module.exports = (fastify, opts, next) => {
         useNewUrlParser: true
       });
     }
+
+    let result = {};
+    let url = '';
+    try {
+      result = await client.db('moody').collection('discord').aggregate(queries.userStatsChannel(req.body.channelID, req.body.userID)).toArray();
+      let key = `${req.body.userID}-userStatsChannel-${Date.now()}`;
+      await storeResult(key, {Sentiment: req.body.Sentiment, type: 2, result: result});
+      url = `http://ec2-35-153-138-183.compute-1.amazonaws.com:5000/userStatsChannel/${key}`;
+
+    } catch (e) {
+      console.log(e);
+    }
+
+    res.send(url);
   });
 
   fastify.get('/userStatsChannel/:result', async (req, res) => {
+    let user;
+    let data = [];
+    try {
+      let result = await s3.getObject({Bucket: 'cloud2018final', Key: req.params.result}).promise();
+      let jsonResult = JSON.parse(result.Body.toString('utf8'));
+      let reqResult = await request({
+        method: 'GET',
+        uri: `https://discordapp.com/api/v6/users/${jsonResult.result[0].userID}`,
+        headers: {
+          'Authorization': `Bot ${auth.token}`
+        },
+        json: true
+      })
+      //  console.log(reqResult);
+      user=`"${reqResult.username}#${reqResult.discriminator}"`
+      jsonResult.result.forEach(record => {
+        switch (record._id) {
+          case "NEGATIVE":
+            //userdata[2].
+            data.push(record.avgScore);
+            break;
+          case "POSITIVE":
+            //userdata[0].
+            data.push(record.avgScore);
+            break;
+          case "MIXED":
+          //  userdata[3].
+            data.push(record.avgScore);
+            break;
+          case "NEUTRAL":
+            //userdata[1].
+            data.push(record.avgScore);
+            break;
+          default:
+        }
+      })
 
+        //dates.push(`"${reqResult._id}"`);
+        //userdata.push(+user.avgScore);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+    // userdata.forEach(ud => {
+    //   data.push(`${JSON.stringify(ud)}`);
+    // })
+
+    res.header('Content-Type', 'text/html')
+    res.type('text/html')
+    res.send(require('../public/html/result').userStats(user, data));
   });
 
   next();
